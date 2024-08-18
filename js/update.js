@@ -40,6 +40,3 @@ function update() {
 }
 
 // 真机运行不需要检查更新，真机运行时appid固定为'HBuilder'，这是调试基座的appid
-if(plus.runtime.appid !== 'HBuilder' && mui.os.plus && !mui.os.stream ){
-  mui.plusReady(update);
-} 
