@@ -1,147 +1,190 @@
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<meta charset="utf-8">
-		<title>图片加文字</title>
-		<link rel="icon" type="image/png" href="favicon.png">
-		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<link rel="stylesheet" href="css/mui.min.css">
-		<style type="text/css">
-			#list {
-				/*避免导航边框和列表背景边框重叠，看起来像两条边框似得；*/
-				margin-top: -1px;
-			}
-		</style>
-	</head>
+<head>
+	<meta charset="utf-8">
+	<title>图片加文字</title>
+	<link rel="icon" type="image/png" href="favicon.png">
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="css/mui.min.css">
+	<style type="text/css">
+		#list {
+			/*避免导航边框和列表背景边框重叠，看起来像两条边框似得；*/
+			margin-top: -1px;
+		}
+	</style>
+</head>
 
-	<body>
-		<div class="mui-content">
-			<label>水印内容</label>
-			<textarea name="message" rows="10" cols="30" id="Value"></textarea>
-			<div class="mui-input-group">
+<body>
+	<div class="mui-content">
+		<label>水印内容</label>
+		<textarea name="message" rows="10" cols="30" id="Value"></textarea>
+		<div class="mui-input-group">
 
-				<div class="mui-input-row">
-					<label>字号</label>
-					<div class="mui-numbox">
-						<!-- "-"按钮，点击可减小当前数值 -->
-						<button class="mui-btn mui-numbox-btn-minus" type="button">-</button>
-						<input class="mui-numbox-input" type="number" id="Size" value="20"/>
-						<!-- "+"按钮，点击可增大当前数值 -->
-						<button class="mui-btn mui-numbox-btn-plus" type="button">+</button>
-					</div>
-				</div>
-				<div class="mui-input-row">
-					<label>图片</label>
-					<input type="file" class="mui-input-clear" id="imageInput" accept="image/*">
-				</div>
-				<div class="mui-button-row">
-					<label>颜色</label>
-					<!-- <button type="button" >蓝色</button> -->
-					<input class="mui-btn mui-btn-primary" type="color" id="Color" value="#ff0000" />
-				</div>
-				<div class="mui-button-row">
-					<span> </span>
-				</div>
-				<div class="mui-button-row">
-					<button type="button" class="mui-btn mui-btn-primary" id="sub">生成</button>
-					<!-- <button type="button" class="mui-btn mui-btn-danger">取消</button> -->
+			<div class="mui-input-row">
+				<label>字号</label>
+				<div class="mui-numbox">
+					<!-- "-"按钮，点击可减小当前数值 -->
+					<button class="mui-btn mui-numbox-btn-minus" type="button">-</button>
+					<input class="mui-numbox-input" type="number" id="Size" value="20" />
+					<!-- "+"按钮，点击可增大当前数值 -->
+					<button class="mui-btn mui-numbox-btn-plus" type="button">+</button>
 				</div>
 			</div>
-
-
-			<canvas id="preview" hidden></canvas> <!-- 隐藏canvas，直接使用img显示，但处理在canvas中进行 -->
-			<img id="finalPreview" src="" alt="Preview with Watermark">
-
-
-
+			<div class="mui-input-row">
+				<label>图片</label>
+				<input type="file" class="mui-input-clear" id="imageInput" accept="image/*">
+			</div>
+			<div class="mui-button-row">
+				<label>颜色</label>
+				<!-- <button type="button" >蓝色</button> -->
+				<input class="mui-btn mui-btn-primary" type="color" id="Color" value="#ff0000" />
+			</div>
+			<div class="mui-button-row">
+				<span> </span>
+			</div>
+			<div class="mui-button-row">
+				<button type="button" class="mui-btn mui-btn-primary" id="sub">生成</button>
+				<button type="button" class="mui-btn mui-btn-danger" id="download">下载</button>
+			</div>
 		</div>
 
-		<script src="js/mui.min.js"></script>
-		<script src="js/update.js" type="text/javascript" charset="utf-8"></script>
-		<script>
-			var textarea = document.getElementById('Value');
-			var placeholder = '在这里输入水印内容...';
 
-			// 初始时显示占位符  
-			textarea.value = placeholder;
-
-			// 当textarea获得焦点时  
-			textarea.onfocus = function() {
-				if (textarea.value === placeholder) {
-					textarea.value = '';
-					textarea.style.color = ''; // 如果有的话，移除占位符的特定样式  
-				}
-			};
-
-			// 当textarea失去焦点且为空时  
-			textarea.onblur = function() {
-				if (textarea.value === '') {
-					textarea.value = placeholder;
-					textarea.style.color = '#aaa'; // 可以为占位符添加特定样式  
-				}
-			};
+		<canvas id="preview" hidden></canvas> <!-- 隐藏canvas，直接使用img显示，但处理在canvas中进行 -->
+		<img id="finalPreview" src="" alt="Preview with Watermark">
 
 
 
+	</div>
 
-			document.getElementById('sub').addEventListener('click', function(event) {
-				console.log("2");
-				const file = document.getElementById('imageInput').files[0];
-				if (!file.type.startsWith('image/')) {
-					alert('请上传图片文件！');
-					return;
-				}
-				console.log("8");
-				let strShuiYin = document.getElementById('Value').value;
-				let strZihao = document.getElementById('Size').value;
-				let strYanse = document.getElementById('Color').value;
-				// let strx = document.getElementById('posX').value;
-				// let stry = document.getElementById('posY').value;
-				let x = 10;
-				let y = parseInt(strZihao);
-				console.log(strShuiYin, strYanse, strZihao);
+	<script src="js/mui.min.js"></script>
+	<script src="js/update.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		var textarea = document.getElementById('Value');
+		var placeholder = '在这里输入水印内容...';
 
-				const reader = new FileReader();
-				reader.onload = function(e) {
-					const img = new Image();
-					img.onload = function() {
-						const canvas = document.getElementById('preview');
-						const ctx = canvas.getContext('2d');
+		// 初始时显示占位符  
+		textarea.value = placeholder;
 
-						// 设置canvas的尺寸与图片相同  
-						canvas.width = img.width;
-						canvas.height = img.height;
+		// 当textarea获得焦点时  
+		textarea.onfocus = function () {
+			if (textarea.value === placeholder) {
+				textarea.value = '';
+				textarea.style.color = ''; // 如果有的话，移除占位符的特定样式  
+			}
+		};
 
-						// 清除canvas（虽然这里是首次绘制，但清除是个好习惯）  
-						ctx.clearRect(0, 0, canvas.width, canvas.height);
+		// 当textarea失去焦点且为空时  
+		textarea.onblur = function () {
+			if (textarea.value === '') {
+				textarea.value = placeholder;
+				textarea.style.color = '#aaa'; // 可以为占位符添加特定样式  
+			}
+		};
+		function downloadBase64Image(base64, filename) {
+			// 创建一个a标签  
+			var a = document.createElement('a');
+			// 去掉Base64的URL头（如果需要的话）  
+			// 注意：如果Base64字符串不包含URL头，则不需要这一步  
+			// var base64Url = base64.replace(/^data:image\/\w+;base64,/, "");  
+			// 但在这里，我们直接使用base64（假设它已经包含了URL头）  
 
-						// 绘制图片  
-						ctx.drawImage(img, 0, 0);
+			// 设置a标签的href和download属性  
+			a.href = base64; // 直接使用包含URL头的Base64字符串  
+			a.download = filename;
+			// 触发下载  
+			document.body.appendChild(a); // 防止某些浏览器不允许在document之外触发click  
+			a.click();
+			// 清理  
+			document.body.removeChild(a);
+			// 去掉Base64图片数据的URL头，即data:image/png;base64,  
+			// var base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
 
-						// 添加水印  
-						ctx.font = strZihao + 'px 微软雅黑 bold';
-						ctx.fillStyle = strYanse; //'rgba(255, 255, 255, 0.5)'; // 半透明  
-						var lines = strShuiYin.split('\n');
+			// // 创建一个a标签用于下载  
+			// var a = document.createElement('a');
+			// // 创建一个Blob对象，里面存放的是转换后的二进制数据  
+			// var blob = new Blob([window.atob(base64Data)], { type: 'image/png' });
 
-						lines.forEach(function(line) {
-							ctx.fillText(line, 10, y); // 假设从x=10开始绘制每行文本  
-							y += parseInt(strZihao); // 根据需要调整每行之间的间距  
-						});
+			// // 为a标签设置下载的文件名  
+			// a.download = filename;
+			// // 将Blob对象转换为URL  
+			// a.href = URL.createObjectURL(blob);
+			// // 触发下载  
+			// a.click();
 
-						// 将canvas的内容设置为img的src  
-						document.getElementById('finalPreview').src = canvas.toDataURL();
-						//alert("123");
-						// 如果需要，可以取消canvas的隐藏状态，但在这里我们直接用img显示  
-						// canvas.hidden = false;  
-					};
-					img.src = e.target.result;
+			// // 释放URL对象  
+			// URL.revokeObjectURL(a.href);
+		}
+		document.getElementById('download').addEventListener('click', function (event) {
+			// alert();
+			console.log(document.getElementById('finalPreview').src);
+			var base64Image = document.getElementById('finalPreview').src; // 你的Base64图片数据  
+			var filename = 'downloaded-image.png'; // 你想要的文件名  
+			downloadBase64Image(base64Image, filename);
+			// var canvas = document.getElementById('myCanvas'); // 假设你有一个canvas元素  
+			// var imageUrl = canvas.toDataURL('image/png').replace("image/png", "image/octet-stream"); // 获取图片URL并修改MIME类型以触发下载  
+
+			// 接下来的代码与上述示例相同
+		});
+
+
+		document.getElementById('sub').addEventListener('click', function (event) {
+			console.log("2");
+			const file = document.getElementById('imageInput').files[0];
+			if (!file.type.startsWith('image/')) {
+				alert('请上传图片文件！');
+				return;
+			}
+			console.log("8");
+			let strShuiYin = document.getElementById('Value').value;
+			let strZihao = document.getElementById('Size').value;
+			let strYanse = document.getElementById('Color').value;
+			// let strx = document.getElementById('posX').value;
+			// let stry = document.getElementById('posY').value;
+			let x = 10;
+			let y = parseInt(strZihao);
+			console.log(strShuiYin, strYanse, strZihao);
+
+			const reader = new FileReader();
+			reader.onload = function (e) {
+				const img = new Image();
+				img.onload = function () {
+					const canvas = document.getElementById('preview');
+					const ctx = canvas.getContext('2d');
+
+					// 设置canvas的尺寸与图片相同  
+					canvas.width = img.width;
+					canvas.height = img.height;
+
+					// 清除canvas（虽然这里是首次绘制，但清除是个好习惯）  
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+					// 绘制图片  
+					ctx.drawImage(img, 0, 0);
+
+					// 添加水印  
+					ctx.font = strZihao + 'px 微软雅黑 bold';
+					ctx.fillStyle = strYanse; //'rgba(255, 255, 255, 0.5)'; // 半透明  
+					var lines = strShuiYin.split('\n');
+
+					lines.forEach(function (line) {
+						ctx.fillText(line, 10, y); // 假设从x=10开始绘制每行文本  
+						y += parseInt(strZihao); // 根据需要调整每行之间的间距  
+					});
+
+					// 将canvas的内容设置为img的src  
+					document.getElementById('finalPreview').src = canvas.toDataURL();
+					//alert("123");
+					// 如果需要，可以取消canvas的隐藏状态，但在这里我们直接用img显示  
+					// canvas.hidden = false;  
 				};
-				reader.readAsDataURL(file);
-			});
-		</script>
-	</body>
+				img.src = e.target.result;
+			};
+			reader.readAsDataURL(file);
+		});
+	</script>
+</body>
 
 </html>
