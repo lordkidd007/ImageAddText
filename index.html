@@ -19,6 +19,9 @@
 
 <body>
 	<div class="mui-content">
+		<h3>静静工具箱之图片加文字</h3>
+		<pre></pre>
+
 		<label>水印内容</label>
 		<textarea name="message" rows="10" cols="30" id="Value"></textarea>
 		<div class="mui-input-group">
@@ -104,7 +107,7 @@
 
 			// 设置a标签的href和download属性  
 			a.href = base64; // 直接使用包含URL头的Base64字符串  
-			a.download = getCurrentDateTimeString()+".png";
+			a.download = getCurrentDateTimeString() + ".png";
 			// 触发下载  
 			document.body.appendChild(a); // 防止某些浏览器不允许在document之外触发click  
 			a.click();
