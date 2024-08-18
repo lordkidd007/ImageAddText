@@ -83,7 +83,18 @@
 				textarea.style.color = '#aaa'; // 可以为占位符添加特定样式  
 			}
 		};
-		function downloadBase64Image(base64, filename) {
+		function getCurrentDateTimeString() {
+			const now = new Date();
+			const year = now.getFullYear().toString().padStart(4, '0');
+			const month = (now.getMonth() + 1).toString().padStart(2, '0'); // 月份是从0开始的  
+			const day = now.getDate().toString().padStart(2, '0');
+			const hours = now.getHours().toString().padStart(2, '0');
+			const minutes = now.getMinutes().toString().padStart(2, '0');
+			const seconds = now.getSeconds().toString().padStart(2, '0');
+
+			return year + month + day + hours + minutes + seconds;
+		}
+		function downloadBase64Image(base64) {
 			// 创建一个a标签  
 			var a = document.createElement('a');
 			// 去掉Base64的URL头（如果需要的话）  
@@ -93,7 +104,7 @@
 
 			// 设置a标签的href和download属性  
 			a.href = base64; // 直接使用包含URL头的Base64字符串  
-			a.download = filename;
+			a.download = getCurrentDateTimeString()+".png";
 			// 触发下载  
 			document.body.appendChild(a); // 防止某些浏览器不允许在document之外触发click  
 			a.click();
@@ -117,12 +128,13 @@
 			// // 释放URL对象  
 			// URL.revokeObjectURL(a.href);
 		}
+
 		document.getElementById('download').addEventListener('click', function (event) {
 			// alert();
 			console.log(document.getElementById('finalPreview').src);
 			var base64Image = document.getElementById('finalPreview').src; // 你的Base64图片数据  
-			var filename = 'downloaded-image.png'; // 你想要的文件名  
-			downloadBase64Image(base64Image, filename);
+			//var filename = 'downloaded-image.png'; // 你想要的文件名  
+			downloadBase64Image(base64Image);
 			// var canvas = document.getElementById('myCanvas'); // 假设你有一个canvas元素  
 			// var imageUrl = canvas.toDataURL('image/png').replace("image/png", "image/octet-stream"); // 获取图片URL并修改MIME类型以触发下载  
 
